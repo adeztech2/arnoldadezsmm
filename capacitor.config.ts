@@ -3,7 +3,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.adez.smm',
   appName: 'Adez SMM',
-  webDir: '.output/public',
+  webDir: 'dist/client',
   server: {
     androidScheme: 'https',
   },
