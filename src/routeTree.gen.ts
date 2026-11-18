@@ -13,6 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as ManusOauthCallbackRouteImport } from './routes/manus-oauth/callback'
+import { Route as ManusOauthLogoutRouteImport } from './routes/manus-oauth/logout'
+import { Route as ManusOauthStartRouteImport } from './routes/manus-oauth/start'
 import { Route as ApiPublicWebhooksPaystackRouteImport } from './routes/api/public/webhooks/paystack'
 
 const IndexRoute = IndexRouteImport.update({
@@ -34,6 +37,21 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ManusOauthCallbackRoute = ManusOauthCallbackRouteImport.update({
+  id: '/manus-oauth/callback',
+  path: '/manus-oauth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManusOauthLogoutRoute = ManusOauthLogoutRouteImport.update({
+  id: '/manus-oauth/logout',
+  path: '/manus-oauth/logout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManusOauthStartRoute = ManusOauthStartRouteImport.update({
+  id: '/manus-oauth/start',
+  path: '/manus-oauth/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWebhooksPaystackRoute =
   ApiPublicWebhooksPaystackRouteImport.update({
     id: '/api/public/webhooks/paystack',
@@ -45,12 +63,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/manus-oauth/callback': typeof ManusOauthCallbackRoute
+  '/manus-oauth/logout': typeof ManusOauthLogoutRoute
+  '/manus-oauth/start': typeof ManusOauthStartRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/manus-oauth/callback': typeof ManusOauthCallbackRoute
+  '/manus-oauth/logout': typeof ManusOauthLogoutRoute
+  '/manus-oauth/start': typeof ManusOauthStartRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
 }
 export interface FileRoutesById {
@@ -59,19 +83,39 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/manus-oauth/callback': typeof ManusOauthCallbackRoute
+  '/manus-oauth/logout': typeof ManusOauthLogoutRoute
+  '/manus-oauth/start': typeof ManusOauthStartRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/api/public/webhooks/paystack'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/manus-oauth/callback'
+    | '/manus-oauth/logout'
+    | '/manus-oauth/start'
+    | '/api/public/webhooks/paystack'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/api/public/webhooks/paystack'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/manus-oauth/callback'
+    | '/manus-oauth/logout'
+    | '/manus-oauth/start'
+    | '/api/public/webhooks/paystack'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/manus-oauth/callback'
+    | '/manus-oauth/logout'
+    | '/manus-oauth/start'
     | '/api/public/webhooks/paystack'
   fileRoutesById: FileRoutesById
 }
@@ -79,6 +123,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ManusOauthCallbackRoute: typeof ManusOauthCallbackRoute
+  ManusOauthLogoutRoute: typeof ManusOauthLogoutRoute
+  ManusOauthStartRoute: typeof ManusOauthStartRoute
   ApiPublicWebhooksPaystackRoute: typeof ApiPublicWebhooksPaystackRoute
 }
 
@@ -112,6 +159,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/manus-oauth/callback': {
+      id: '/manus-oauth/callback'
+      path: '/manus-oauth/callback'
+      fullPath: '/manus-oauth/callback'
+      preLoaderRoute: typeof ManusOauthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manus-oauth/logout': {
+      id: '/manus-oauth/logout'
+      path: '/manus-oauth/logout'
+      fullPath: '/manus-oauth/logout'
+      preLoaderRoute: typeof ManusOauthLogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manus-oauth/start': {
+      id: '/manus-oauth/start'
+      path: '/manus-oauth/start'
+      fullPath: '/manus-oauth/start'
+      preLoaderRoute: typeof ManusOauthStartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/webhooks/paystack': {
       id: '/api/public/webhooks/paystack'
       path: '/api/public/webhooks/paystack'
@@ -137,6 +205,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ManusOauthCallbackRoute: ManusOauthCallbackRoute,
+  ManusOauthLogoutRoute: ManusOauthLogoutRoute,
+  ManusOauthStartRoute: ManusOauthStartRoute,
   ApiPublicWebhooksPaystackRoute: ApiPublicWebhooksPaystackRoute,
 }
 export const routeTree = rootRouteImport
