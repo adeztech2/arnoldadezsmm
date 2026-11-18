@@ -13,6 +13,20 @@ pnpm run build
 
 The application server must listen on the project runtime port. Keep browser-facing URLs relative and let the Manus proxy provide the public HTTPS origin.
 
+## Vercel
+
+For the Vercel project, use the TanStack Start framework preset; the repository includes `vercel.json`. Add these values in **Settings → Environment Variables** for the environments you deploy:
+
+```text
+DATABASE_URL
+MANUS_PROJECT_ID
+MANUS_OAUTH_PORTAL_URL
+MANUS_OAUTH_API_URL
+MANUS_JWT_SECRET
+```
+
+Without these values, public pages can render but `/manus-oauth/start` cannot begin sign-in and protected server functions cannot access MySQL. Redeploy after adding or changing Vercel environment variables.
+
 ## 2. Runtime values
 
 The Manus project supplies these values automatically:

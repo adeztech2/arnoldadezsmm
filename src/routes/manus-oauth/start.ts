@@ -6,9 +6,17 @@ export const Route = createFileRoute('/manus-oauth/start')({
     handlers: {
       GET: async ({ request }) => {
         const origin = new URL(request.url).origin;
+        const portalUrl = process.env['MANUS_OAUTH_PORTAL_URL'];
+        const projectId = process.env['MANUS_PROJECT_ID'];
+        if (!portalUrl || !projectId) {
+          return new Response('Manus OAuth is not configured for this deployment.', {
+            status: 503,
+            headers: { 'content-type': 'text/plain; charset=utf-8' },
+          });
+        }
         const { nonce, state, redirectUri } = createOAuthState(origin);
-        const url = new URL(`${process.env['MANUS_OAUTH_PORTAL_URL']}/app-auth`);
-        url.searchParams.set('appId', process.env['MANUS_PROJECT_ID']!);
+        const url = new URL(`${portalUrl}/app-auth`);
+        url.searchParams.set('appId', projectId);
         url.searchParams.set('redirectUri', redirectUri);
         url.searchParams.set('state', state);
         url.searchParams.set('responseType', 'code');
