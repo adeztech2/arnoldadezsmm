@@ -1,0 +1,110 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-signal-soft: var(--signal-soft);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* ADEZ: warm paper, deep ink, signal orange */
+:root {
+  --radius: 0.875rem;
+  --background: oklch(0.94 0.017 80);
+  --foreground: oklch(0.25 0.05 260);
+  --card: oklch(0.98 0.008 85);
+  --card-foreground: oklch(0.25 0.05 260);
+  --popover: oklch(0.98 0.008 85);
+  --popover-foreground: oklch(0.25 0.05 260);
+  --primary: oklch(0.25 0.05 260);
+  --primary-foreground: oklch(0.94 0.017 80);
+  --secondary: oklch(0.9 0.022 80);
+  --secondary-foreground: oklch(0.25 0.05 260);
+  --muted: oklch(0.9 0.022 80);
+  --muted-foreground: oklch(0.52 0.025 265);
+  --accent: oklch(0.63 0.19 35);
+  --accent-foreground: oklch(0.98 0.008 85);
+  --signal-soft: oklch(0.9 0.05 35);
+  --destructive: oklch(0.47 0.15 20);
+  --destructive-foreground: oklch(0.98 0.008 85);
+  --success: oklch(0.47 0.07 185);
+  --success-soft: oklch(0.9 0.03 185);
+  --warning: oklch(0.6 0.12 75);
+  --warning-soft: oklch(0.92 0.05 85);
+  --border: oklch(0.85 0.03 80);
+  --input: oklch(0.8 0.035 80);
+  --ring: oklch(0.63 0.19 35);
+  --chart-1: oklch(0.63 0.19 35);
+  --chart-2: oklch(0.47 0.07 185);
+  --chart-3: oklch(0.25 0.05 260);
+  --chart-4: oklch(0.6 0.12 75);
+  --chart-5: oklch(0.47 0.15 20);
+  --sidebar: oklch(0.25 0.05 260);
+  --sidebar-foreground: oklch(0.94 0.017 80);
+  --sidebar-primary: oklch(0.63 0.19 35);
+  --sidebar-primary-foreground: oklch(0.98 0.008 85);
+  --sidebar-accent: oklch(0.32 0.05 260);
+  --sidebar-accent-foreground: oklch(0.94 0.017 80);
+  --sidebar-border: oklch(0.35 0.04 260);
+  --sidebar-ring: oklch(0.63 0.19 35);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+  h1, h2, h3 { font-family: var(--font-serif); letter-spacing: -0.015em; }
+}
+
+@utility font-display { font-family: var(--font-serif); }
+@utility rise { animation: rise 0.5s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
