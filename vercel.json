@@ -1,3 +1,12 @@
 {
-  "framework": "tanstack-start"
+  "version": 2,
+  "builds": [
+    { "src": "server/vercel.js", "use": "@vercel/node", "config": { "includeFiles": ["public/**"], "maxDuration": 60 } }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "/server/vercel.js" }
+  ],
+  "crons": [
+    { "path": "/smm-api/jobs/cron", "schedule": "0 3 * * *" }
+  ]
 }
