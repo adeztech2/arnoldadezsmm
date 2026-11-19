@@ -12,9 +12,13 @@
     "serve": "node server/index.js",
     "build": "node scripts/check.js",
     "typecheck": "node scripts/check.js",
-    "test": "node --test --test-concurrency=1 test/*.test.js"
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "mobile:sync": "pnpm run build && pnpm exec cap sync android",
+    "mobile:apk": "pnpm run mobile:sync && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^18.0.7",
     "express": "^5.2.1",
@@ -23,7 +27,9 @@
     "pino": "^9.14.0"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.6.2",
     "mongodb-memory-server": "^11.3.0",
-    "supertest": "^7.3.1"
+    "supertest": "^7.3.1",
+    "typescript": "^5.9.3"
   }
 }

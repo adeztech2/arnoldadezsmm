@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ADEZ SMM</string>
+    <string name="title_activity_main">ADEZ SMM</string>
+    <string name="package_name">com.adez.smm</string>
+    <string name="custom_url_scheme">com.adez.smm</string>
+</resources>

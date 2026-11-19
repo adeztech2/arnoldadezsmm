@@ -6,3 +6,5 @@ coverage/
 generated-artifacts/
 .vercel/
 *.log
+android/app/build/
+android/.gradle/
