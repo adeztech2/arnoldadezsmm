@@ -3,7 +3,7 @@ import { User, Session, Settings, RateLimit, Payment, Order } from './models.js'
 import { connectDatabase, transaction } from './db.js';
 import { AppError, fail, text, object } from './lib/errors.js';
 import { hash, randomToken, hashPassword, verifyPassword, issueCsrf, cookieOptions } from './lib/security.js';
-import { settings, apiKey, appUrl, audit } from './config.js';
+import { settings, apiKey, appUrl, audit, bootstrapAdmin } from './config.js';
 import { userView } from './serializers.js';
 import { sendResetEmail } from './providers.js';
 
@@ -71,13 +71,19 @@ authRouter.post('/register', async (req, res) => {
   const email = emailAddress(input.email), name = text(input.name, 'Name', 2, 80), country = countryCode(input.country);
   const config = await settings();
   if (!config.registrationOpen || config.maintenance) fail(503, 'Registration is temporarily unavailable.');
+  const bootstrap = bootstrapAdmin();
+  if (bootstrap) {
+    if (email !== bootstrap.email) fail(403, 'Register with the configured administrator email to complete setup.');
+    if (input.password !== bootstrap.password) fail(403, 'The configured administrator password is required to complete setup.');
+  }
   const passwordHash = await hashPassword(input.password);
   let user;
   try {
     user = await transaction(async session => {
       const first = await Settings.findOneAndUpdate({ _id: 'site', firstUserRegistered: false },
         { $set: { firstUserRegistered: true } }, { session, new: true });
-      const [created] = await User.create([{ email, name, country, passwordHash, role: first ? 'super_admin' : 'user' }], { session });
+      const role = bootstrap ? 'super_admin' : first ? 'super_admin' : 'user';
+      const [created] = await User.create([{ email, name, country, passwordHash, role }], { session });
       await audit(created._id, 'account.registered', created._id, first ? 'First account became super administrator.' : 'Account created.', session);
       return created;
     });

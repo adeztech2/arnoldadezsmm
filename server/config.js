@@ -9,6 +9,11 @@ export const defaults = {
   registrationOpen: true, maintenance: false, providerToWalletRate: 0, paystackToWalletRate: 1,
   defaultMarkupPercent: 30, emailFrom: '', providerCurrency: '', lastSyncAt: null
 };
+export function bootstrapAdmin() {
+  const email = process.env.BOOTSTRAP_ADMIN_EMAIL?.trim().toLowerCase();
+  const password = process.env.BOOTSTRAP_ADMIN_PASSWORD;
+  return email && password ? { email, password } : null;
+}
 export async function settings() {
   return await Settings.findById('site').lean() || defaults;
 }
