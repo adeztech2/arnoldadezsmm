@@ -12,7 +12,8 @@
     "serve": "node server/index.js",
     "build": "node scripts/check.js",
     "typecheck": "node scripts/check.js",
-    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "test": "NODE_ENV=test node --test --test-concurrency=1 test/*.test.js",
+    "db:migrate": "node scripts/migrate-mysql.mjs",
     "mobile:sync": "pnpm run build && pnpm exec cap sync android",
     "mobile:apk": "pnpm run mobile:sync && cd android && ./gradlew assembleDebug"
   },
@@ -24,6 +25,7 @@
     "express": "^5.2.1",
     "helmet": "^8.3.0",
     "mongoose": "^9.11.1",
+    "mysql2": "^3.24.6",
     "pino": "^9.14.0"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 # ADEZ SMM
 
-Version 1.0.0. A standalone Node.js application serving plain HTML, CSS and browser JavaScript. MongoDB is accessed through Mongoose. There is no React frontend and no client-side provider API key.
+Version 1.0.0. A standalone Node.js application serving plain HTML, CSS and browser JavaScript. Production persistence uses the Manus-managed MySQL-compatible database through `DATABASE_URL`. There is no React frontend and no client-side provider API key.
 
 ## Included
 
@@ -18,12 +18,12 @@ Version 1.0.0. A standalone Node.js application serving plain HTML, CSS and brow
 
 ## Quick start
 
-Requirements: Node.js 22 or newer and a MongoDB replica set, such as MongoDB Atlas. A standalone MongoDB server without transaction support is deliberately refused because wallet operations must be atomic.
+Requirements: Node.js 22 or newer and a Manus-managed MySQL-compatible database. Wallet reservations, refunds and payment credits use MySQL transactions.
 
 From the extracted `adez-smm` directory:
 
 ```sh
-npm install
+pnpm install
 cp .env.example .env
 # Fill .env locally. Do not commit it.
 npm start
@@ -35,7 +35,7 @@ Required environment configuration:
 
 | Variable | Purpose |
 | --- | --- |
-| `MONGODB_URI` | Atlas or another MongoDB replica-set connection |
+| `DATABASE_URL` | Manus-managed MySQL connection supplied by the platform |
 | `SESSION_SECRET` | Stable random string of at least 32 characters |
 | `SETTINGS_ENCRYPTION_KEY` | Separate stable random encryption key, recommended |
 | `APP_URL` | Your actual public HTTPS origin, without a path or trailing slash |
@@ -47,11 +47,11 @@ Generate each random secret separately:
 node -e "process.stdout.write(require('crypto').randomBytes(48).toString('hex'))"
 ```
 
-The public page can load without MongoDB. In that state the API reports `configured: false`, and authentication and financial actions return a clear configuration error. It never substitutes fake accounts, money or services.
+The public page can load without the managed database. In that state the API reports `configured: false`, and authentication and financial actions return a clear configuration error. It never substitutes fake accounts, money or services.
 
 ## Owner setup
 
-1. Connect your MongoDB database and set the stable environment secrets.
+1. Enable the Manus managed database and run `pnpm db:migrate` once, or allow application startup to apply the repeatable schema migration.
 2. Register your owner account **before opening the site to other people**. The first successful registration is automatically super admin. There is no publicly accessible role-selection field.
 3. Open **Admin > Settings**. Set the site name, icon URL, support email and verified Resend sender email.
 4. Enter ShakerGains, Resend, GiftedPay and Paystack keys. Stored keys are AES-256-GCM encrypted and write-only. Empty key fields preserve existing values.
@@ -98,7 +98,7 @@ Sync preserves existing operator prices and enabled state, updates provider pric
 
 ## Render
 
-For a standalone repository with this directory's files at its root, use the included `render.yaml` to create a Node web service. Set `MONGODB_URI` and the actual HTTPS `APP_URL`. Render generates the session, encryption and scheduler secrets.
+For a standalone repository with this directory's files at its root, use the included `render.yaml` to create a Node web service. Set the managed `DATABASE_URL` and the actual HTTPS `APP_URL`. Render generates the session, encryption and scheduler secrets.
 
 The blueprint uses a paid Starter service; review the selected service plan before creating it. No hosting account or service has been created by this project.
 
@@ -110,7 +110,7 @@ The long-running Node process reconciles orders and payments every minute. Set `
 
 Import this standalone directory as the project root. For the complete workspace, set the Vercel Root Directory to `artifacts/adez-smm`. Select **Other** as the framework and do not configure a static output directory.
 
-The included configuration routes requests to the Express serverless handler and traces `public/` into the deployment. Set the environment values above in Vercel, then set `APP_URL` to the actual HTTPS origin and redeploy. Atlas must permit your host's database connections.
+The included configuration routes requests to the Express serverless handler and traces `public/` into the deployment. Set the environment values above in Vercel, then set `APP_URL` to the actual HTTPS origin and redeploy. The deployed runtime must receive a MySQL-compatible `DATABASE_URL`.
 
 Vercel has no persistent background process. The included cron runs daily and sends `Authorization: Bearer <CRON_SECRET>`. For prompt reconciliation without a customer online, configure a supported more frequent scheduler for your hosting plan, or an external authenticated scheduler:
 
@@ -125,10 +125,10 @@ Vercel and Render deployment files are supplied, but deployments to those accoun
 
 ## Security notes
 
-* Scrypt password hashing, random database-backed sessions, hashed reset tokens and session invalidation after password changes.
+* Scrypt password hashing, random MySQL-backed sessions, hashed reset tokens and session invalidation after password changes.
 * HttpOnly, SameSite cookies; Secure cookies in production.
 * CSRF validation, origin checks, role checks, per-user ownership checks and database-backed rate limiting.
-* Strict input validation and explicit scalar MongoDB filters against operator injection.
+* Strict input validation and parameterized SQL filters against injection.
 * Helmet security headers and Content Security Policy with no inline scripts or external executable browser dependencies.
 * Public assets only. Environment files and server code are not exposed through static serving.
 * No provider credentials or passwords in application request logs, customer responses or audit entries.
@@ -142,18 +142,19 @@ This is not a guarantee against every attack or a substitute for a production se
 
 ```sh
 npm install
-npm run build
-npm test
+pnpm db:migrate
+pnpm run build
+pnpm test
 ```
 
-The suite starts and stops an **isolated MongoDB replica set** and uses controlled provider responses. It does not contact or charge your live gateways. The first test run may download a MongoDB 8.0.5 binary. The host must support that binary. To use an existing compatible binary, set `MONGOMS_SYSTEM_BINARY` to its path.
+The regression suite uses the preserved isolated MongoDB adapter for compatibility and controlled provider responses; production runtime does not use it. The MySQL schema is deterministic and can be applied with `pnpm db:migrate` against the Manus `DATABASE_URL`.
 
 The delivered build passed 36 tests. See `docs/test-report.md`. Public desktop and mobile screens were inspected. Signed-in page rendering was not verified in a browser; protected route behavior was exercised by API integration tests. Real provider credentials, email delivery, real-money payments and real ShakerGains fulfilment have **not** been live tested.
 
 ## Layout
 
 ```text
-server/            Express application, Mongoose models and provider adapters
+server/            Express application, MySQL repository models and provider adapters
 server/lib/        Input, password, encryption and CSRF helpers
 public/index.html  HTML shell
 public/css/        Responsive styling and animation

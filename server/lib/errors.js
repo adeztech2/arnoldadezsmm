@@ -25,7 +25,7 @@ export function object(value) {
   return value;
 }
 export function objectId(value) {
-  if (typeof value !== 'string' || !/^[a-f0-9]{24}$/i.test(value)) fail(400, 'Invalid identifier.');
+  if (typeof value !== 'string' || !/^(?:[a-f0-9]{24}|[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12})$/i.test(value)) fail(400, 'Invalid identifier.');
   return value;
 }
 export function safeUrl(value, name = 'URL') {
